@@ -14,6 +14,7 @@ const Month = () => {
         return dayjs(new Date()).format("YYYY-MM");
     })
 
+    // 时间选择器点击确认后拿到确认的时间date对象，并显示选择的时间
     const onClickConfirm = (date) => {
         setDateVisible(false)
         const formatDate = dayjs(date).format("YYYY-MM")
