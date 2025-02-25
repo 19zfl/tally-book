@@ -46,6 +46,10 @@ const New = () => {
     setSelectTime(date)
   }
 
+  const formatSelectTime = dayjs(selectTime).format('YYYY-MM-DD')
+
+  const currentTime = dayjs(new Date()).format('YYYY-MM-DD')
+
   return (
     <div className="keepAccounts">
       <NavBar className="nav" onBack={() => navigate(-1)}>
@@ -74,7 +78,7 @@ const New = () => {
           <div className="kaForm">
             <div className="date">
               <Icon type="calendar" className="icon" />
-              <span className="text" onClick={() => setDateVisible(true)}>{dayjs(selectTime).format('YYYY-MM-DD')}</span>
+              <span className="text" onClick={() => setDateVisible(true)}>{formatSelectTime === currentTime ? '今天' : formatSelectTime}</span>
               {/* 时间选择器 */}
               <DatePicker
                 className="kaDate"
