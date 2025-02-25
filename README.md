@@ -171,3 +171,110 @@ const Layout = () => {
 ![image-20250225122631243](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225122631282.png)
 
 ![image-20250225122619161](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225122619207.png)
+
+## 6. Redux管理账目列表
+
+基于RTK管理账目列表
+
+![image-20250225123916501](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225123916552.png)
+
+```js
+// /store/modules/billStore.js
+// 账单列表相关store
+
+import { createSlice } from "@reduxjs/toolkit"
+import axios from "axios";
+
+const billStore = createSlice({
+    name: 'billStore',
+    // 数据状态state
+    initialState: {
+        billList: []
+    },
+    // 同步方法
+    reducers: {
+        setBillList(state, action) {
+            state.billList = action.payload
+        }
+    }
+})
+
+// 解构actionCreater函数
+const { setBillList } = billStore.actions
+
+const billReducer = billStore.reducer
+
+// 编写异步
+const getBillList = () => {
+    return async (dispatch) => {
+        // 编写异步请求
+        const res = await axios.get('http://localhost:8888/ka')
+        // 触发同步reducer
+        dispatch(setBillList(res.data))
+    }
+}
+
+export { getBillList }
+
+// 导出reducer
+export default billReducer
+```
+
+```js
+// /store/index.js
+import billReducer from "./modules/billStore"
+import {configureStore} from "@reduxjs/toolkit";
+
+// 组合子模块，导出store实例
+const store = configureStore({
+    reducer: {
+        bill: billReducer
+    }
+})
+
+export default store
+```
+
+```js
+// /src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import router from '@/router';
+import store from '@/store';
+
+import '@/index.css';
+import '@/theme.css'
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <Provider store={store}>
+        <RouterProvider router={router} />
+    </Provider>
+);
+```
+
+```js
+import { Outlet } from "react-router-dom"
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {getBillList} from "@/store/modules/billStore";
+
+const Layout = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getBillList())
+    }, [dispatch])
+    return (
+        <div>
+            我是Layout
+            <Outlet />
+        </div>
+    )
+}
+
+export default Layout
+```
+
