@@ -690,6 +690,335 @@ useEffect(() => {
 
 ## 9. 月度账单 - 单日统计列表实现
 
+### 每日统计列表
+
 需求：把当前月的账单数据以单日为单位进行统计显示。
 
 ![image-20250225191516832](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225191516899.png)
+
+```js
+const Month = () => {
+
+    ......
+
+    // 二次处理数据：进行月份分组
+    const monthList = useMemo(() => {
+        return _.groupBy(_.orderBy(billList, 'date', 'desc'), (item) => dayjs(item.date).format("YYYY-MM"));
+    }, [billList]);
+    ......
+
+    // 二级处理：以当前月份进行日分组
+    const currentMonthListByDay = useMemo(() => {
+        const dayList = _.groupBy(currentMonthList, (item) => dayjs(item.date).format("YYYY-MM-DD"));
+        const keys = Object.keys(dayList);
+        return { dayList, keys }
+    }, [currentMonthList]);
+
+    return (
+				......
+                </div>
+                {/*  当日列表统计  */}
+                {
+                    currentMonthListByDay.keys.map(key => {
+                        return <DayBill key={key} date={key} billDetail={currentMonthListByDay.dayList[key]} />
+                    })
+                }
+            </div>
+        </div>
+    )
+}
+
+export default Month
+```
+
+```js
+import classNames from "classnames";
+import "./index.scss"
+import {useMemo} from "react";
+
+const DayBill = ({date, billDetail}) => {
+  // 计算支出、收入、结余
+  const dayResult = useMemo(() => {
+    const pay = billDetail.filter(item => item.type === 'pay').reduce((a, c) => a + c.money, 0);
+    const income = billDetail.filter(item => item.type === 'income').reduce((a, c) => a + c.money, 0);
+    const  total = pay + income;
+    return {
+      pay, income, total
+    }
+  }, [billDetail]);
+  return (
+    <div className={classNames('dailyBill')}>
+      <div className="header">
+        <div className="dateIcon">
+          <span className="date">{date}</span>
+          <span className={classNames('arrow')}></span>
+        </div>
+        <div className="oneLineOverview">
+          <div className="pay">
+            <span className="type">支出</span>
+            <span className="money">{dayResult.pay}</span>
+          </div>
+          <div className="income">
+            <span className="type">收入</span>
+            <span className="money">{dayResult.income}</span>
+          </div>
+          <div className="balance">
+            <span className="money">{dayResult.total}</span>
+            <span className="type">结余</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default DayBill
+```
+
+```scss
+.dailyBill {
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+
+  .header {
+    --ka-text-color: #888c98;
+    padding: 15px 15px 10px 15px;
+
+    .dateIcon {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 21px;
+      margin-bottom: 9px;
+      .arrow {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-top: -3px;
+        margin-left: 9px;
+        border-top: 2px solid #888c98;
+        border-left: 2px solid #888c98;
+        transform: rotate(225deg);
+        transform-origin: center;
+        transition: all 0.3s;
+      }
+      .arrow.expand {
+        transform: translate(0, 2px) rotate(45deg);
+      }
+
+      .date {
+        font-size: 14px;
+      }
+    }
+  }
+  .oneLineOverview {
+    display: flex;
+    justify-content: space-between;
+
+    .pay {
+      flex: 1;
+      .type {
+        font-size: 10px;
+        margin-right: 2.5px;
+        color: #e56a77;
+      }
+      .money {
+        color: var(--ka-text-color);
+        font-size: 13px;
+      }
+    }
+
+    .income {
+      flex: 1;
+      .type {
+        font-size: 10px;
+        margin-right: 2.5px;
+        color: #4f827c;
+      }
+      .money {
+        color: var(--ka-text-color);
+        font-size: 13px;
+      }
+    }
+
+    .balance {
+      flex: 1;
+      margin-bottom: 5px;
+      text-align: right;
+
+      .money {
+        line-height: 17px;
+        margin-right: 6px;
+        font-size: 17px;
+      }
+      .type {
+        font-size: 10px;
+        color: var(--ka-text-color);
+      }
+    }
+  }
+
+  .billList {
+    padding: 15px 10px 15px 15px;
+    border-top: 1px solid #ececec;
+    .bill {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 43px;
+      margin-bottom: 15px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .icon {
+        margin-right: 10px;
+        font-size: 25px;
+      }
+      .detail {
+        flex: 1;
+        padding: 4px 0;
+
+        .billType {
+          display: flex;
+          align-items: center;
+          height: 17px;
+          line-height: 17px;
+          font-size: 14px;
+          padding-left: 4px;
+        }
+      }
+      .money {
+        font-size: 17px;
+
+        &.pay {
+          color: #ff917b;
+        }
+        &.income {
+          color: #4f827c;
+        }
+      }
+    }
+  }
+}
+.dailyBill.expand {
+  .header {
+    border-bottom: 1px solid #ececec;
+  }
+  .billList {
+    display: block;
+  }
+}
+```
+
+### 单日列表详情
+
+需求：把单日的账单列表渲染到视图中。
+
+![image-20250225200634787](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225200634846.png)
+
+```js
+// contants/index.js
+export const billListData = {
+  pay: [
+    {
+      type: 'foods',
+      name: '餐饮',
+      list: [
+        { type: 'food', name: '餐费' },
+        { type: 'drinks', name: '酒水饮料' },
+        { type: 'dessert', name: '甜品零食' },
+      ],
+    },
+    {
+      type: 'taxi',
+      name: '出行交通',
+      list: [
+        { type: 'taxi', name: '打车租车' },
+        { type: 'longdistance', name: '旅行票费' },
+      ],
+    },
+    {
+      type: 'recreation',
+      name: '休闲娱乐',
+      list: [
+        { type: 'bodybuilding', name: '运动健身' },
+        { type: 'game', name: '休闲玩乐' },
+        { type: 'audio', name: '媒体影音' },
+        { type: 'travel', name: '旅游度假' },
+      ],
+    },
+    {
+      type: 'daily',
+      name: '日常支出',
+      list: [
+        { type: 'clothes', name: '衣服裤子' },
+        { type: 'bag', name: '鞋帽包包' },
+        { type: 'book', name: '知识学习' },
+        { type: 'promote', name: '能力提升' },
+        { type: 'home', name: '家装布置' },
+      ],
+    },
+    {
+      type: 'other',
+      name: '其他支出',
+      list: [{ type: 'community', name: '社区缴费' }],
+    },
+  ],
+  income: [
+    {
+      type: 'professional',
+      name: '其他支出',
+      list: [
+        { type: 'salary', name: '工资' },
+        { type: 'overtimepay', name: '加班' },
+        { type: 'bonus', name: '奖金' },
+      ],
+    },
+    {
+      type: 'other',
+      name: '其他收入',
+      list: [
+        { type: 'financial', name: '理财收入' },
+        { type: 'cashgift', name: '礼金收入' },
+      ],
+    },
+  ],
+}
+
+export const billTypeToName = Object.keys(billListData).reduce((prev, key) => {
+  billListData[key].forEach(bill => {
+    bill.list.forEach(item => {
+      prev[item.type] = item.name
+    })
+  })
+  return prev
+}, {})
+```
+
+```js
+// DayBill/index.js
+<div className="header">
+  ......  
+</div>    
+{/* 单日列表详情 */}
+<div className="billList">
+	{
+		billDetail.map(item => {
+			return (
+				<div className="bill" key={item.id}>
+					<div className="detail">
+						<div className="billType">{billTypeToName[item.useFor]}</div>
+					</div>
+					<div className={classNames('money', item.type)}>
+						{item.money.toFixed(2)}
+					</div>
+				</div>
+			)
+		})
+	}
+</div>
+```
+
