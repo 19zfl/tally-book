@@ -517,3 +517,41 @@ export default Month
 }
 ```
 
+点击切换选择框功能实现
+
+功能要求：
+
+1. 点击打开时间选择弹框；
+2. 点击取消/确认按钮以及蒙层区域都可以关闭弹框；
+3. 弹框关闭时箭头朝下，打开是箭头朝上。
+
+基础思路：
+
+![image-20250225153910714](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225153910783.png)
+
+```js
+const [dateVisible, setDateVisible] = useState(false) // 给予开关，时间选择器组件属性做相应修改
+
+{/*  时间切换区域  */}
+// 点击修改显示状态，true打开时间选择器，false关闭时间xuan
+<div className="date" onClick={() => setDateVisible(true)}>
+	<span className="text">
+		2023 | 3月账单
+	</span>
+	// 控制箭头反向
+	<span className={classNames('arrow', dateVisible && ' expand')}></span>
+</div>
+
+{/*  时间选择器  */}
+<DatePicker
+	className="kaDate"
+	title="记账日期"
+	precision="month"
+	visible={dateVisible}
+	max={new Date()}
+	onClose={() => setDateVisible(false)}
+	onCancel={() => setDateVisible(false)}
+	onConfirm={() => setDateVisible(false)}
+/>
+```
+
