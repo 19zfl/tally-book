@@ -278,3 +278,93 @@ const Layout = () => {
 export default Layout
 ```
 
+## 7. TabBar功能实现
+
+需求理解和实现方式
+
+需求：使用antd的TabBar标签栏组件进行布局以及路由的切换。
+
+![image-20250225132732084](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225132732132.png)
+
+实现方式：看文档（找到相似demo - 复制代码跑通 - 定制化修改）。
+
+```scss
+// 报错安装依赖：npm i -D sass
+// /Layout/index.scss
+.layout {
+  .container {
+    position: fixed;
+    top: 0;
+    bottom: 50px;
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}
+```
+
+```js
+// /Lay
+import { TabBar } from "antd-mobile"
+import {Outlet, useNavigate} from "react-router-dom"
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {getBillList} from "@/store/modules/billStore";
+
+import { BillOutline, CalculatorOutline, AddCircleOutline } from "antd-mobile-icons"
+
+import './index.scss'
+
+const Layout = () => {
+    const tabs = [
+        {
+            key: '/month',
+            title: '月度账单',
+            icon: <BillOutline />
+        },
+        {
+            key: '/new',
+            title: '记账',
+            icon: <AddCircleOutline />
+        },
+        {
+            key: '/year',
+            title: '年度账单',
+            icon: <CalculatorOutline />
+        },
+    ]
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getBillList())
+    }, [dispatch])
+
+    const navigate = useNavigate();
+
+    // 切换菜单跳转路由
+    const switchRoute = (path) => {
+        navigate(path);
+    }
+
+    return (
+        <div className="layout">
+            <div className="container">
+                <Outlet />
+            </div>
+            <div className="footer">
+                <TabBar onChange={switchRoute}>
+                    {tabs.map(item => (
+                        <TabBar.Item key={item.key} title={item.title} icon={item.icon} />
+                    ))}
+                </TabBar>
+            </div>
+        </div>
+    )
+}
+
+export default Layout
+```
+

@@ -1,0 +1,13 @@
+// 报错安装依赖：npm i -D sass
+.layout {
+  .container {
+    position: fixed;
+    top: 0;
+    bottom: 50px;
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}
