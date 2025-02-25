@@ -1022,3 +1022,33 @@ export const billTypeToName = Object.keys(billListData).reduce((prev, key) => {
 </div>
 ```
 
+### 点击展开列表详情
+
+需求：点击展开收起箭头，显示当日账单详情。
+
+![image-20250225202055031](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225202055085.png)
+
+![image-20250225202238246](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225202238310.png)
+
+```js
+// /DayBill/index.js
+const [visible, setVisible] = useState(false);
+
+return (
+    <div className={classNames('dailyBill')}>
+      <div className="header">
+        <div className="dateIcon">
+          <span className="date">{date}</span>
+          <span className={classNames('arrow', visible && 'expand')} onClick={() => setVisible(!visible)}></span>
+        </div>
+        .
+        </div>
+      </div>
+      {/* 单日列表详情 */}
+      <div className="billList" style={{display: visible ? 'block' : 'none'}}>
+        ...
+      </div>
+    </div>
+  )
+```
+
