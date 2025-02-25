@@ -306,7 +306,7 @@ export default Layout
 ```
 
 ```js
-// /Lay
+// /Layout/index.js
 import { TabBar } from "antd-mobile"
 import {Outlet, useNavigate} from "react-router-dom"
 import {useEffect} from "react";
@@ -366,5 +366,154 @@ const Layout = () => {
 }
 
 export default Layout
+```
+
+## 8. 月度账单 - 统计区域
+
+功能截图和静态结构搭建
+
+![image-20250225135901216](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225135901281.png)
+
+功能点：
+
+1. 点击切换月份；
+2. 适配箭头显示；
+3. 统计支出、收入、结余数据。
+
+```js
+import {DatePicker, NavBar} from "antd-mobile";
+
+import "./index.scss"
+
+const Month = () => {
+    return (
+        <div className="monthlyBill">
+            <NavBar className="nav" backArrow={false}>
+                月度收入
+            </NavBar>
+            <div className="content">
+                <div className="header">
+                    {/*  时间切换区域  */}
+                    <div className="date">
+                        <span className="text">
+                            2023 | 3月账单
+                        </span>
+                        <span className="arrow expand"></span>
+                    </div>
+                    {/*  统计区域  */}
+                    <div className="twoLineOverview">
+                        <div className="item">
+                            <span className="money">{100}</span>
+                            <span className="type">支出</span>
+                        </div>
+                        <div className="item">
+                            <span className="money">{200}</span>
+                            <span className="type">收入</span>
+                        </div>
+                        <div className="item">
+                            <span className="money">{200}</span>
+                            <span className="type">结余</span>
+                        </div>
+                    </div>
+                    {/*  时间选择器  */}
+                    <DatePicker
+                        className="kaDate"
+                        title="记账日期"
+                        precision="month"
+                        visible={false}
+                        max={new Date()}
+                    />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default Month
+```
+
+```scss
+.monthlyBill {
+  --ka-text-color: #191d26;
+  height: 100%;
+  background: linear-gradient(180deg, #ffffff, #f5f5f5 100%);
+  background-size: 100% 240px;
+  background-repeat: no-repeat;
+  background-color: rgba(245, 245, 245, 0.9);
+  color: var(--ka-text-color);
+
+  .nav {
+    --adm-font-size-10: 16px;
+    color: #121826;
+    background-color: transparent;
+    .adm-nav-bar-back-arrow {
+      font-size: 20px;
+    }
+  }
+
+  .content {
+    height: 573px;
+    padding: 0 10px;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
+    }
+
+    > .header {
+      height: 135px;
+      padding: 20px 20px 0px 18.5px;
+      margin-bottom: 10px;
+      background-image: url(https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/reactbase/ka/month-bg.png);
+      background-size: 100% 100%;
+
+      .date {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 16px;
+
+        .arrow {
+          display: inline-block;
+          width: 7px;
+          height: 7px;
+          margin-top: -3px;
+          margin-left: 9px;
+          border-top: 2px solid #121826;
+          border-left: 2px solid #121826;
+          transform: rotate(225deg);
+          transform-origin: center;
+          transition: all 0.3s;
+        }
+        .arrow.expand {
+          transform: translate(0, 2px) rotate(45deg);
+        }
+      }
+    }
+  }
+  .twoLineOverview {
+    display: flex;
+    justify-content: space-between;
+    width: 250px;
+
+    .item {
+      display: flex;
+      flex-direction: column;
+
+      .money {
+        height: 24px;
+        line-height: 24px;
+        margin-bottom: 5px;
+        font-size: 18px;
+      }
+      .type {
+        height: 14px;
+        line-height: 14px;
+        font-size: 12px;
+      }
+    }
+  }
+}
 ```
 
