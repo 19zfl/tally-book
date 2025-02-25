@@ -370,7 +370,7 @@ export default Layout
 
 ## 8. 月度账单 - 统计区域
 
-功能截图和静态结构搭建
+### 功能截图和静态结构搭建
 
 ![image-20250225135901216](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225135901281.png)
 
@@ -517,7 +517,7 @@ export default Month
 }
 ```
 
-点击切换选择框功能实现
+### 点击切换选择框功能实现
 
 功能要求：
 
@@ -533,7 +533,7 @@ export default Month
 const [dateVisible, setDateVisible] = useState(false) // 给予开关，时间选择器组件属性做相应修改
 
 {/*  时间切换区域  */}
-// 点击修改显示状态，true打开时间选择器，false关闭时间xuan
+// 点击修改显示状态，true为打开时间选择器，false为关闭时间选择器
 <div className="date" onClick={() => setDateVisible(true)}>
 	<span className="text">
 		2023 | 3月账单
@@ -555,3 +555,6 @@ const [dateVisible, setDateVisible] = useState(false) // 给予开关，时间�
 />
 ```
 
+### 点击确定切换时间显示
+
+![image-20250225160032201](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225160032273.png)
