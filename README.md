@@ -1041,7 +1041,7 @@ return (
           <span className="date">{date}</span>
           <span className={classNames('arrow', visible && 'expand')} onClick={() => setVisible(!visible)}></span>
         </div>
-        .
+        ......
         </div>
       </div>
       {/* 单日列表详情 */}
@@ -1050,5 +1050,35 @@ return (
       </div>
     </div>
   )
+```
+
+### 账单类型图标组件封装
+
+需求：封装一个图表组件，可以根据不同的账单类型显示不同的图标。
+
+![image-20250225203800495](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225203800577.png)
+
+```js
+// icon/index.js
+const Icon = ({ type }) => {
+    return (
+        <img
+            src={`https://yjy-teach-oss.oss.cn-beijing.aliyuncs.com/reactbase/ka/${type}.svg`}
+            alt="icon"
+            style={{ width: 20, height: 20 }}
+        />
+    )
+}
+
+export default Icon
+```
+
+```js
+// DayBill/index.js
+<div className="bill" key={item.id}>
+	<Icon type={item.useFor} />
+	<div className="detail">
+    ......
+</div>
 ```
 
