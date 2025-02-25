@@ -6,6 +6,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import {useSelector} from "react-redux";
 import _ from "lodash";
+import DayBill from "@/components/Month/DayBill";
 
 const Month = () => {
 
@@ -21,7 +22,7 @@ const Month = () => {
 
     // 二次处理数据：进行月份分组
     const monthList = useMemo(() => {
-        return _.groupBy(billList, (item) => dayjs(item.date).format("YYYY-MM"));
+        return _.groupBy(_.orderBy(billList, 'date', 'desc'), (item) => dayjs(item.date).format("YYYY-MM"));
     }, [billList]);
 
     // 当前月份的账单数据
@@ -57,6 +58,13 @@ const Month = () => {
             setCurrentMonthList(monthList[currentDate])
         }
     }, [monthList])
+
+    // 二级处理：以当前月份进行日分组
+    const currentMonthListByDay = useMemo(() => {
+        const dayList = _.groupBy(currentMonthList, (item) => dayjs(item.date).format("YYYY-MM-DD"));
+        const keys = Object.keys(dayList);
+        return { dayList, keys }
+    }, [currentMonthList]);
 
     return (
         <div className="monthlyBill">
@@ -99,6 +107,12 @@ const Month = () => {
                         onConfirm={onClickConfirm}
                     />
                 </div>
+                {/*  当日列表统计  */}
+                {
+                    currentMonthListByDay.keys.map(key => {
+                        return <DayBill key={key} date={key} billDetail={currentMonthListByDay.dayList[key]} />
+                    })
+                }
             </div>
         </div>
     )

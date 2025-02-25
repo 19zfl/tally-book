@@ -688,3 +688,8 @@ useEffect(() => {
 }, [monthList])
 ```
 
+## 9. 月度账单 - 单日统计列表实现
+
+需求：把当前月的账单数据以单日为单位进行统计显示。
+
+![image-20250225191516832](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225191516899.png)
