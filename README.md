@@ -106,3 +106,68 @@ json-server是一个node包，可以在不到30秒内获得零编码的完整的
 
 ## 4. 整体路由设计
 
+路由设计
+
+![image-20250225120517798](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225120517924.png)
+
+1. 两个一级路由（Layout / new）；
+2. 两个二级路由（Layout - month / year）。
+
+```js
+import { createBrowserRouter } from "react-router-dom";
+
+import New from "@/pages/New";
+import Year from "@/pages/Year";
+import Layout from "@/pages/Layout";
+import Month from "@/pages/Month";
+
+// 创建路由实例，绑定path element
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <Layout />,
+        children: [
+            {
+                path: '/month',
+                element: <Month />
+            },
+            {
+                path: '/year',
+                element: <Year />
+            },
+        ]
+    },
+    {
+        path: '/new',
+        element: <New />
+    },
+])
+```
+
+```js
+// /Layout/index.js
+import { Outlet } from "react-router-dom"
+
+const Layout = () => {
+    return (
+        <div>
+            我是Layout
+       		// 二级路由出口
+            <Outlet />
+        </div>
+    )
+}
+```
+
+## 5. antd-mobile主题定制
+
+定制方案：
+
+1. 全局定制：整个应用范围内的组件都生效；
+2. 局部定制：只在某些元素内部的组件生效。
+
+实现方式：
+
+![image-20250225122631243](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225122631282.png)
+
+![image-20250225122619161](https://gitee.com/coder_zfl/markdown-image-cloud-drive/raw/master/markdown/20250225122619207.png)
