@@ -674,3 +674,17 @@ const Month = () => {
 }
 ```
 
+### 月度初始化渲染统计数据
+
+需求：打开月度账单时，把当前月份的统计数据渲染出来。
+
+```js
+// 初始化的时候直接显示当前月份的统计数据
+useEffect(() => {
+	// 边界值控制：当取不到值时就不要进行统计，否则计算出
+	if (monthList[currentDate]) {
+		setCurrentMonthList(monthList[currentDate])
+	}
+}, [monthList])
+```
+

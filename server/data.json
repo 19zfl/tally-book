@@ -97,6 +97,13 @@
       "date": "2023-02-02T16:00:00.000Z",
       "useFor": "salary",
       "id": 21
+    },
+    {
+      "type": "income",
+      "money": 888,
+      "date": "2025-02-25T16:00:00.000Z",
+      "useFor": "salary",
+      "id": 22
     }
   ]
 }

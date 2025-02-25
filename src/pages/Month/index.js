@@ -1,7 +1,7 @@
 import {DatePicker, NavBar} from "antd-mobile";
 
 import "./index.scss"
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import {useSelector} from "react-redux";
@@ -49,6 +49,14 @@ const Month = () => {
         setCurrentMonthList(monthList[formatDate] ? monthList[formatDate] : [])
         setCurrentDate(formatDate)
     }
+
+    // 初始化的时候直接显示当前月份的统计数据
+    useEffect(() => {
+        // 边界值控制：当取不到值时就不要进行统计，否则计算出
+        if (monthList[currentDate]) {
+            setCurrentMonthList(monthList[currentDate])
+        }
+    }, [monthList])
 
     return (
         <div className="monthlyBill">
